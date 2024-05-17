@@ -12,18 +12,19 @@ export const LoginForm = ({ setRender }: RenderChildProps<AccountRenderName>) =>
   const [password, setPassword] = useState('')
   const [badCredentials, setBadCredentials] = useState(false)
   const [loading, setLoading] = useState(false)
-  const { setUser } = useUser()
+  const { setToken } = useUser()
 
   const handleLogin = () => {
     const fetchUser = async () => {
       setLoading(true)
-      const response = await ApiService.login(username, password)
+      const response = await ApiService.getToken(username, password)
+
       setLoading(false)
       if (response.responseCode !== ResponseCode.POSITIVE) {
         setBadCredentials(true)
         return
       }
-      setUser(response.data)
+      setToken(response.data!)
       setBadCredentials(false)
     }
     fetchUser()

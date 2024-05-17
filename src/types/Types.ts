@@ -2,6 +2,20 @@ import { NavigationProp } from '@react-navigation/native'
 import { Dispatch, SetStateAction } from 'react'
 import { ResponseCode } from '../services/api/ResponseCode'
 
+export type Token = {
+  access: string
+  refresh: string
+}
+
+export type User = {
+  id: string
+  username: string
+  email: string
+  first_name: string
+  last_name: string
+  picture: string
+}
+
 export type RootStackParamList = {
   Agenda: undefined
   Fridge: undefined
@@ -50,6 +64,13 @@ export type SizeProduct = {
 
 export type Product = {
   id: string
+  barcode: string
   name: string
-  size: SizeProduct
+  amount: number
+  unit: 'ml' | 'l' | 'g' | 'kg'
+  picture: string
+  added_by: User['id']
+  carbons: number
+  fat: number
+  protein: number
 }

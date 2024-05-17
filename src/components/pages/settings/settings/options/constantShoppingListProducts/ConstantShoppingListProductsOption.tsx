@@ -13,8 +13,6 @@ export const ConstantShoppingListProductsOption = ({ setRender }: RenderChildPro
   const [loading, setLoading] = useState(true)
   const [showAdd, setShowAdd] = useState(true)
 
-  // const product: Product = { id: '', name: 'product', size: { quantity: 200, type: 'ml' } }
-
   const loadProductFromApi = (): Product => {
     const generateRandomString = (length: number) => {
       const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -29,10 +27,14 @@ export const ConstantShoppingListProductsOption = ({ setRender }: RenderChildPro
     return {
       id: generateRandomString(Math.floor(1 + Math.random() * 10)),
       name: 'Product from api',
-      size: {
-        quantity: 200,
-        type: 'ml'
-      }
+      barcode: '',
+      amount: 200,
+      unit: 'ml',
+      picture: '',
+      added_by: '',
+      carbons: 20,
+      fat: 20,
+      protein: 20
     }
   }
 
