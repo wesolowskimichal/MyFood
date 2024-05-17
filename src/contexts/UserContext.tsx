@@ -3,6 +3,8 @@ import { Token, User } from '../types/Types'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ApiService } from '../services/api/ApiService'
 import { ResponseCode } from '../services/api/ResponseCode'
+import { LocalData } from '../services/localStorage/LocalData'
+import { LocalResponseCode } from '../services/localStorage/LocalResponseCode'
 
 interface userContextType {
   user: User | null
@@ -40,26 +42,21 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }: UserProv
 
   useEffect(() => {
     const loadToken = async () => {
-      const tokenJson = await AsyncStorage.getItem('token')
-      if (tokenJson) {
-        const token: Token = JSON.parse(tokenJson)
-        setToken(token)
+      const tokenResponse = await LocalData.getToken()
+      if (tokenResponse.responseCode === LocalResponseCode.POSITIVE) {
+        setToken(tokenResponse.data)
       }
     }
     loadToken()
   }, [])
 
   const handleSetToken = (token: Token | null) => {
-    const saveToken = async () => {
-      await AsyncStorage.setItem('token', JSON.stringify(token))
-    }
-
-    const removeToken = async () => {
-      await AsyncStorage.removeItem('token')
+    const setLocal = async () => {
+      await LocalData.setToken(token)
     }
 
     setToken(token)
-    token ? saveToken() : removeToken()
+    setLocal()
   }
   return (
     <UserContext.Provider value={{ user, setUser, token, setToken: handleSetToken }}>{children}</UserContext.Provider>

@@ -1,15 +1,12 @@
-import { Button, View, Text, Image, TouchableOpacity, ScrollView, ToastAndroid, BackHandler } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView, ToastAndroid, BackHandler } from 'react-native'
 import { Meal, RenderChildProps, SettingsRenderName } from '../../../../../../types/Types'
 import { useCallback, useEffect, useState } from 'react'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { styles } from './MealsConfigOption.style'
 import { MealView } from '../../../../../../views/meal/MealView'
 import { useFocusEffect } from '@react-navigation/native'
 import Loader from '../../../../../../views/loader/Loader'
-
-// default meals confing
-// number of meals = 3
-// names = breakfast, lunch, dinner
+import { LocalData } from '../../../../../../services/localStorage/LocalData'
+import { LocalResponseCode } from '../../../../../../services/localStorage/LocalResponseCode'
 
 export const MealsConfigOption = ({ setRender }: RenderChildProps<SettingsRenderName>) => {
   const [meals, setMeals] = useState<Meal[]>([])
@@ -28,15 +25,17 @@ export const MealsConfigOption = ({ setRender }: RenderChildProps<SettingsRender
   const addMeal = () => {
     ToastAndroid.show('Meal was added', ToastAndroid.SHORT)
     setMeals(prevMeals => [...prevMeals, { name: `Meal ${prevMeals.length + 1}` }])
+    setChanged(true)
   }
 
   const saveMeals = async () => {
-    await AsyncStorage.setItem('mealsConfig', JSON.stringify(meals))
+    await LocalData.setMealsConfig(meals)
     ToastAndroid.show('Meals configuration was saved', ToastAndroid.SHORT)
   }
 
   const removeLastMeal = () => {
     ToastAndroid.show('Last meal was removed', ToastAndroid.SHORT)
+    setChanged(true)
     setMeals(prevMeals => {
       if (prevMeals.length > 0) {
         return prevMeals.slice(0, -1)
@@ -47,6 +46,7 @@ export const MealsConfigOption = ({ setRender }: RenderChildProps<SettingsRender
   }
 
   const removeMeal = (index: number) => {
+    setChanged(true)
     setMeals(prevMeals => {
       if (index >= 0 && index < prevMeals.length) {
         return prevMeals.filter((_, i) => i !== index)
@@ -54,23 +54,6 @@ export const MealsConfigOption = ({ setRender }: RenderChildProps<SettingsRender
       return prevMeals
     })
   }
-
-  // TODO: add loading animation on await
-  const loadMealsConfigCallback = useCallback(async () => {
-    try {
-      const defaultMeals: Meal[] = [{ name: 'Breakfast' }, { name: 'Lunch' }, { name: 'Dinner' }]
-      const mealsConfigJson = await AsyncStorage.getItem('mealsConfig')
-      setLoading(false)
-      if (mealsConfigJson !== null) {
-        const mealsConfig: Meal[] = JSON.parse(mealsConfigJson)
-        setMeals(mealsConfig)
-      } else {
-        setMeals(defaultMeals)
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }, [])
 
   useFocusEffect(
     useCallback(() => {
@@ -84,8 +67,15 @@ export const MealsConfigOption = ({ setRender }: RenderChildProps<SettingsRender
   )
 
   useEffect(() => {
-    loadMealsConfigCallback()
-  }, [loadMealsConfigCallback])
+    const getMealsConfig = async () => {
+      const mealsConfig = await LocalData.getMealsConfig()
+      setLoading(false)
+      if (mealsConfig.responseCode === LocalResponseCode.POSITIVE) {
+        setMeals(mealsConfig.data!)
+      }
+    }
+    getMealsConfig()
+  }, [])
 
   return loading ? (
     <View style={styles.loaderWrapper}>

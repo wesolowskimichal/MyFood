@@ -2,6 +2,8 @@ import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import { ResponseCode } from './ResponseCode'
 import { ApiResponse, Token, User } from '../../types/Types'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { LocalData } from '../localStorage/LocalData'
+import { LocalResponseCode } from '../localStorage/LocalResponseCode'
 
 export class ApiService {
   private static __debug = true
@@ -60,10 +62,9 @@ export class ApiService {
   }
 
   private static async getConfig(mutliplatformFormData = false): Promise<AxiosRequestConfig<any> | undefined> {
-    const tokenJson = await AsyncStorage.getItem('token')
-    if (tokenJson) {
-      const token: Token = JSON.parse(tokenJson)
-      const accessToken = token.access
+    const tokenResponse = await LocalData.getToken()
+    if (tokenResponse.responseCode === LocalResponseCode.POSITIVE) {
+      const accessToken = tokenResponse.data!.access
       if (mutliplatformFormData) {
         return {
           headers: {
