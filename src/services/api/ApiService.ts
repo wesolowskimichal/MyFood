@@ -1,4 +1,5 @@
-import { ApiResponse, ChangePasswordType, Recipe, RecipePage, Token, User } from '../../types/Types'
+import { ApiResponse, ChangePasswordType, GenericTypes, Recipe, RecipePage, Token, User } from '../../types/Types'
+import { RecipeComponent } from './assets/components/recipe/RecipeComponent'
 import { RecipesComponent } from './assets/components/recipes/RecipesComponent'
 import { TokenComponent } from './assets/components/token/TokenComponent'
 import { UserComponent } from './assets/components/user/UserComponent'
@@ -7,6 +8,7 @@ export class ApiService {
   private static _tokenComponent: TokenComponent = new TokenComponent()
   private static _userComponent: UserComponent = new UserComponent()
   private static _recipesComponent: RecipesComponent = new RecipesComponent()
+  private static _recipeComponent: RecipeComponent = new RecipeComponent()
 
   public static async getToken(username: string, password: string): Promise<ApiResponse<Token>> {
     return this._tokenComponent.post({ username, password })
@@ -40,7 +42,6 @@ export class ApiService {
     return this._userComponent.recipes.get(0)
   }
   //#endregion API-USER
-
   //#region API-RECIPES
   public static async getRecipes(page?: number): Promise<ApiResponse<RecipePage>> {
     if (page) {
@@ -51,6 +52,53 @@ export class ApiService {
 
   public static async postRecipe(recipe: Recipe): Promise<ApiResponse<Recipe>> {
     return this._recipesComponent.post(recipe)
+  }
+  //#endregion
+  //#region API-RECIPE
+  public static async getRecipe(id: GenericTypes['id']) {
+    return this._recipeComponent.id(id).get()
+  }
+
+  public static async putRecipe(
+    id: GenericTypes['id'],
+    recipe: {
+      name: Recipe['name']
+      description: Recipe['description']
+      shared: Recipe['shared']
+      products: Recipe['products']
+      preparation: Recipe['preparation']
+      time: Recipe['time']
+      difficulty: Recipe['difficulty']
+      servings: Recipe['servings']
+      picture: Recipe['picture']
+    }
+  ) {
+    return this._recipeComponent.id(id).put(recipe)
+  }
+
+  public static async patchRecipe(
+    id: GenericTypes['id'],
+    recipe: {
+      name?: Recipe['name']
+      description?: Recipe['description']
+      shared?: Recipe['shared']
+      products?: Recipe['products']
+      preparation?: Recipe['preparation']
+      time?: Recipe['time']
+      difficulty?: Recipe['difficulty']
+      servings?: Recipe['servings']
+      picture?: Recipe['picture']
+    }
+  ) {
+    return this._recipeComponent.id(id).patch(recipe)
+  }
+
+  public static async deleteRecipe(id: GenericTypes['id']) {
+    return this._recipeComponent.id(id).del()
+  }
+
+  public static async likeRecipe(id: GenericTypes['id']) {
+    return this._recipeComponent.like.id(id).post()
   }
   //#endregion
 }

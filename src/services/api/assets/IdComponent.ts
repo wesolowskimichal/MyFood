@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from 'axios'
+import axios from 'axios'
 import { ApiResponse, GenericTypes } from '../../../types/Types'
 import { ApiComponent } from './ApiComponent'
 
