@@ -6,6 +6,7 @@ import { LocalResponseCode } from '../services/localStorage/LocalResponseCode'
 export type GenericTypes = {
   id: string
   picture: string
+  url: string
 }
 
 export type Token = {
@@ -111,4 +112,16 @@ export type Product = {
   carbons: number
   fat: number
   protein: number
+}
+
+export type ChangePasswordType = {
+  old_password: string
+  new_password: string
+}
+
+export type RecipePage = {
+  count: number
+  next: GenericTypes['url']
+  previous: GenericTypes['url']
+  results: Recipe[]
 }

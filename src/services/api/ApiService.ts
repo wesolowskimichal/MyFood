@@ -1,107 +1,41 @@
-import axios, { AxiosError, AxiosRequestConfig } from 'axios'
-import { ResponseCode } from './ResponseCode'
-import { ApiResponse, Token, User } from '../../types/Types'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { LocalData } from '../localStorage/LocalData'
-import { LocalResponseCode } from '../localStorage/LocalResponseCode'
+import { ApiResponse, ChangePasswordType, Token, User } from '../../types/Types'
+import { TokenComponent } from './assets/components/token/TokenComponent'
+import { UserComponent } from './assets/components/user/UserComponent'
 
 export class ApiService {
-  private static __debug = true
-
-  private static async apiRequest<T>(request: () => Promise<T>, title: string | null = null): Promise<ApiResponse<T>> {
-    //debug
-    let debugLog = ''
-    debugLog = `Request: ${title ?? '-?-'}`
-
-    try {
-      const data = await request()
-      //debug
-      debugLog += `\t\t=>code: 200\ndata: ${JSON.stringify(data)}`
-      console.log(debugLog)
-      return { data: data, responseCode: ResponseCode.POSITIVE }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const statusCode = (error as AxiosError).response?.status
-        //debug
-        debugLog += `\t\t=>code: ${ApiService.convertCodeToResponseCode(statusCode)}`
-        console.log(debugLog)
-        return { data: null, responseCode: ApiService.convertCodeToResponseCode(statusCode) }
-      } else {
-        //debug
-        debugLog += `\t\t=>code: ${ResponseCode.BAD_RESPONSE}`
-      }
-      //debug
-      console.log(debugLog)
-
-      return { data: null, responseCode: ResponseCode.BAD_RESPONSE }
-    }
-  }
+  private static _tokenComponent: TokenComponent = new TokenComponent()
+  private static _userComponent: UserComponent = new UserComponent()
 
   public static async getToken(username: string, password: string): Promise<ApiResponse<Token>> {
-    const postToken = async (): Promise<Token> => {
-      const response = await axios.post('http://192.168.0.22:3000/api/token/', {
-        username: username,
-        password: password
-      })
-
-      return response.data
-    }
-    return ApiService.apiRequest(postToken, 'get: token')
+    return this._tokenComponent.post({ username, password })
   }
-
-  public static async getUser(): Promise<ApiResponse<User>> {
-    const fetchUser = async () => {
-      const config = await ApiService.getConfig()
-
-      const response = await axios.get('http://192.168.0.22:3000/api/user', config)
-
-      return response.data
-    }
-
-    return ApiService.apiRequest(fetchUser, 'get: user')
-  }
-
-  private static async getConfig(mutliplatformFormData = false): Promise<AxiosRequestConfig<any> | undefined> {
-    const tokenResponse = await LocalData.getToken()
-    if (tokenResponse.responseCode === LocalResponseCode.POSITIVE) {
-      const accessToken = tokenResponse.data!.access
-      if (mutliplatformFormData) {
-        return {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      }
-      return {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      }
-    }
-    return undefined
-  }
-
-  private static convertCodeToResponseCode(responseCode: Number | undefined): ResponseCode {
-    switch (responseCode) {
-      case 400:
-        return ResponseCode.BAD_RESPONSE
-      case 401:
-        return ResponseCode.UNAUTHORIZED
-      case 403:
-        return ResponseCode.FORBIDDEN
-      case 404:
-        return ResponseCode.NOT_FOUND
-      case 408:
-        return ResponseCode.TIMEOUT
-      case 500:
-        return ResponseCode.INTERNAL_SERVER
-      case 502:
-        return ResponseCode.BAD_GATEWAY
-      case 504:
-        return ResponseCode.GATEWAY_TIMEOUT
-      default:
-        return ResponseCode.BAD_RESPONSE
+  //#region API-USER
+  public static async getUser(): Promise<ApiResponse<User>>
+  public static async getUser(id: User['id']): Promise<ApiResponse<User>>
+  public static async getUser(id?: User['id']): Promise<ApiResponse<User>> {
+    if (id) {
+      return this._userComponent.id(id).get()
+    } else {
+      return this._userComponent.get()
     }
   }
+
+  public static async changePassword(changePassword: ChangePasswordType) {
+    return this._userComponent.changePassword.post(changePassword)
+  }
+
+  public static async getUserLikedRecipes(page?: number) {
+    if (page) {
+      return this._userComponent.likedRecipes.get(page)
+    }
+    return this._userComponent.likedRecipes.get(0)
+  }
+
+  public static async getUserRecipes(page?: number) {
+    if (page) {
+      return this._userComponent.recipes.get(page)
+    }
+    return this._userComponent.recipes.get(0)
+  }
+  //#endregion API-USER
 }
