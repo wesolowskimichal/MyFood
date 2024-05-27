@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { LocalResponse, Meal, Token } from '../../types/Types'
-import { LocalResponseCode } from './LocalResponseCode'
 import { ILocalComponent } from './assets/ILocalComponent'
 import { TokenComponent } from './assets/components/TokenComponent'
 import { MealsConfigComponent } from './assets/components/MealsConfigComponent'
