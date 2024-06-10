@@ -1,4 +1,16 @@
-import { ApiResponse, ChangePasswordType, GenericTypes, Recipe, RecipePage, Token, User } from '../../types/Types'
+import {
+  ApiResponse,
+  ChangePasswordType,
+  GenericTypes,
+  Product,
+  ProductPage,
+  Recipe,
+  RecipePage,
+  Token,
+  User
+} from '../../types/Types'
+import { ProductComponent } from './assets/components/product/ProductComponent'
+import { ProductsComponent } from './assets/components/products/ProductsComponent'
 import { RecipeComponent } from './assets/components/recipe/RecipeComponent'
 import { RecipesComponent } from './assets/components/recipes/RecipesComponent'
 import { TokenComponent } from './assets/components/token/TokenComponent'
@@ -9,6 +21,8 @@ export class ApiService {
   private static _userComponent: UserComponent = new UserComponent()
   private static _recipesComponent: RecipesComponent = new RecipesComponent()
   private static _recipeComponent: RecipeComponent = new RecipeComponent()
+  private static _productsComponent: ProductsComponent = new ProductsComponent()
+  private static _productComponent: ProductComponent = new ProductComponent()
 
   public static async getToken(username: string, password: string): Promise<ApiResponse<Token>> {
     return this._tokenComponent.post({ username, password })
@@ -99,6 +113,23 @@ export class ApiService {
 
   public static async likeRecipe(id: GenericTypes['id']) {
     return this._recipeComponent.like.id(id).post()
+  }
+  //#endregion
+  //#region API-PRODUCTS
+  public static async getProducts(page?: number): Promise<ApiResponse<ProductPage>> {
+    if (page) {
+      return this._productsComponent.get(page)
+    }
+    return this._productsComponent.get(0)
+  }
+
+  public static async postProduct(product: Product): Promise<ApiResponse<Product>> {
+    return this._productsComponent.post(product)
+  }
+  //#endregion
+  //#region API-PRODUCT
+  public static async getProduct(barcode: GenericTypes['id']): Promise<ApiResponse<Product>> {
+    return this._productComponent.id(barcode).get()
   }
   //#endregion
 }

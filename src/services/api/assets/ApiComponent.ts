@@ -37,6 +37,8 @@ export abstract class ApiComponent<T, GET_PROPS, POST_PROPS, PUT_PROPS, PATCH_PR
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const statusCode = (error as AxiosError).response?.status
+        console.log((error as AxiosError).request)
+
         //debug
         debugLog += `\t\t=>code: ${this.convertCodeToResponseCode(statusCode)}`
         console.log(debugLog)

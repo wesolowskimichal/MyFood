@@ -1,8 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { LocalResponse, Meal, Token } from '../../../../types/Types'
 import { LocalComponent } from '../LocalComponent'
+import { __NO_PROPS } from '../../../api/assets/IApiComponent'
 
-export class MealsConfigComponent extends LocalComponent<Meal[]> {
+type __GET_PROPS = __NO_PROPS
+
+export class MealsConfigComponent extends LocalComponent<Meal[], __GET_PROPS> {
   constructor() {
     super('mealsConfig')
   }

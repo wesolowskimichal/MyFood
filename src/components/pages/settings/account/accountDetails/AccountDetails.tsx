@@ -3,6 +3,7 @@ import { Button, ScrollView, Text, View, Image, TouchableOpacity } from 'react-n
 import { useUser } from '../../../../../contexts/UserContext'
 import { styles } from './AccountDetails.style'
 import { User } from '../../../../../types/Types'
+import { convertApiUrl } from '../../../../../functions/Functions'
 
 type AccountDetailsProps = {
   user: User
@@ -21,7 +22,7 @@ export const AccountDetails = ({ user }: AccountDetailsProps) => {
         <ScrollView>
           <View style={styles.header}>
             <Text style={styles.headerUsername}>{user.username}</Text>
-            <Image source={{ uri: user.picture }} style={styles.userImage} />
+            <Image source={{ uri: convertApiUrl(user.picture) }} style={styles.userImage} />
           </View>
           <View style={styles.content}>
             <Text style={styles.contentHeader}>Personal Information:</Text>

@@ -17,26 +17,20 @@ export const ShoppingListProductView = ({ oProduct, onChange }: ShoppingListProd
     setProduct(oProduct ?? null)
   }, [oProduct])
 
-  const handleQuantityChange = (quantity: string) => {
+  const handleQuantityChange = (amount: string) => {
     if (product === null) return
     const updatedProduct: Product = {
       ...product!,
-      size: {
-        ...product!.size,
-        quantity: Number(quantity)
-      }
+      amount: Number(amount)
     }
     onChange(updatedProduct)
   }
 
-  const handleSizeTypeChange = (sizeType: SizeProduct['type']) => {
+  const handleSizeTypeChange = (unit: Product['unit']) => {
     if (product === null) return
     const updatedProduct: Product = {
       ...product!,
-      size: {
-        ...product!.size,
-        type: sizeType
-      }
+      unit: unit
     }
     onChange(updatedProduct)
   }
@@ -51,7 +45,7 @@ export const ShoppingListProductView = ({ oProduct, onChange }: ShoppingListProd
           <TextInput
             style={styles.sizeValAmount}
             keyboardType="numeric"
-            value={String(product?.size.quantity)}
+            value={String(product?.amount)}
             onChangeText={(quantity: string) => handleQuantityChange(quantity)}
           />
           <SelectDropdown
@@ -77,7 +71,7 @@ export const ShoppingListProductView = ({ oProduct, onChange }: ShoppingListProd
                 </View>
               )
             }}
-            defaultValueByIndex={sizeProductKeysArray.indexOf(product ? product.size.type : 'g')}
+            defaultValueByIndex={sizeProductKeysArray.indexOf(product ? product.unit : 'g')}
             dropdownStyle={styles.sizeValDropdownMenu}
           />
         </View>

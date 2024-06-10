@@ -1,8 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { LocalResponse, Token } from '../../../../types/Types'
 import { LocalComponent } from '../LocalComponent'
+import { __NO_PROPS } from '../../../api/assets/IApiComponent'
 
-export class TokenComponent extends LocalComponent<Token> {
+type __GET_PROPS = __NO_PROPS
+
+export class TokenComponent extends LocalComponent<Token, __GET_PROPS> {
   constructor() {
     super('token')
   }

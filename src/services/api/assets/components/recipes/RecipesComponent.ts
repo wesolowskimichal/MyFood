@@ -18,12 +18,12 @@ export class RecipesComponent extends ApiComponent<
   __DEL_PROPS
 > {
   constructor() {
-    super('recipes/?page=')
+    super('recipes/')
   }
 
   get = async (page: __GET_PROPS): Promise<ApiResponse<RecipePage>> => {
     const fetchRecipes = async () => {
-      const response = await axios.get(`${this.url}${page}`)
+      const response = await axios.get(`${this.url}?page=${page}`)
       return response.data
     }
     return super.apiRequest(fetchRecipes, 'get: recipes')

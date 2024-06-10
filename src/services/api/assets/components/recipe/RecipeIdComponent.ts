@@ -83,7 +83,7 @@ export class RecipeIdComponent extends IdComponent<Recipe, __POST_PROPS, __PUT_P
   del = async (): Promise<ApiResponse<null>> => {
     const delRecipe = async () => {
       const config = await super.getConfig()
-      const response = await axios.patch(this.url, config)
+      const response = await axios.delete(this.url, config)
       return response.data
     }
 

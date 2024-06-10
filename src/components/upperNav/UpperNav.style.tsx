@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
     zIndex: 10,
-    top: 45,
+    top: 35,
     right: 10
   },
 

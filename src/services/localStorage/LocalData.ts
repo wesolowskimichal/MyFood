@@ -1,23 +1,31 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { LocalResponse, Meal, Token } from '../../types/Types'
+import { AgendaDay, LocalResponse, Meal, Token } from '../../types/Types'
 import { ILocalComponent } from './assets/ILocalComponent'
 import { TokenComponent } from './assets/components/TokenComponent'
 import { MealsConfigComponent } from './assets/components/MealsConfigComponent'
+import { AgendaDaysComponent } from './assets/components/AgendaDaysComponent'
 
 export class LocalData {
   private static _tokenComponent = new TokenComponent()
   private static _mealsConfigComponent = new MealsConfigComponent()
-  private static _components: ILocalComponent<any>[] = [LocalData._tokenComponent, LocalData._mealsConfigComponent]
+  private static _agendaDaysComponent = new AgendaDaysComponent(this.getMealsConfig)
+  private static _components: ILocalComponent<any, any>[] = [
+    LocalData._tokenComponent,
+    LocalData._mealsConfigComponent,
+    LocalData._agendaDaysComponent
+  ]
 
   public static async initDatabase() {
     const keys = await AsyncStorage.getAllKeys()
     for (const component of LocalData._components) {
       if (component.shouldBeInitialized && !keys.includes(component.key)) {
         console.log(`initializing ${component.key}`)
-
         component.init()
       }
     }
+    const agendaDays = await this._agendaDaysComponent.get()
+    this._agendaDaysComponent.update(agendaDays)
+    // await AsyncStorage.removeItem(this._agendaDaysComponent.key)
   }
 
   //#region Token
@@ -38,5 +46,16 @@ export class LocalData {
   public static async setMealsConfig(mealsConfig: Meal[]) {
     await LocalData._mealsConfigComponent.set(mealsConfig)
   }
+  //#endregion
+
+  //#region Agenda
+  public static async getAgendaDays() {
+    return LocalData._agendaDaysComponent.get()
+  }
+
+  public static async setAgendaDays(value: (AgendaDay | null)[]) {
+    return LocalData._agendaDaysComponent.set(value)
+  }
+
   //#endregion
 }

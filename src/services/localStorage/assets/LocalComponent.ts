@@ -3,7 +3,7 @@ import { LocalResponse } from '../../../types/Types'
 import { LocalResponseCode } from '../LocalResponseCode'
 import { ILocalComponent } from './ILocalComponent'
 
-export abstract class LocalComponent<T> implements ILocalComponent<T> {
+export abstract class LocalComponent<T, GET_PROPS> implements ILocalComponent<T, GET_PROPS> {
   key: string
   abstract shouldBeInitialized: boolean
 
@@ -12,7 +12,7 @@ export abstract class LocalComponent<T> implements ILocalComponent<T> {
   }
 
   abstract init: () => Promise<void>
-  abstract get: () => Promise<LocalResponse<T>>
+  abstract get: (getProps: GET_PROPS) => Promise<LocalResponse<T>>
   abstract set: (value: T) => Promise<void>
 
   protected async stringRequest(request: () => Promise<string>): Promise<LocalResponse<string>> {

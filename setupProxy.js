@@ -3,6 +3,7 @@ const express = require('express')
 
 const app = express()
 
+// Proxy for API requests
 app.use(
   '/api',
   createProxyMiddleware({
@@ -11,8 +12,16 @@ app.use(
   })
 )
 
-// const PORT = process.env.PORT || 3000;
+// Proxy for media requests
+app.use(
+  '/media',
+  createProxyMiddleware({
+    target: 'http://127.0.0.1:8000/media/',
+    changeOrigin: true
+  })
+)
+
 const PORT = 3000
 app.listen(PORT, () => {
-  console.log(`Proxy server running on port ${3000}`)
+  console.log(`Proxy server running on port ${PORT}`)
 })

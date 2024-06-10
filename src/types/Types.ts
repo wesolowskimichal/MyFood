@@ -29,6 +29,7 @@ export type RootStackParamList = {
   Meals: undefined
   ShoppingList: undefined
   Settings: undefined
+  AddProduct: undefined
 }
 
 export type NavProps = {
@@ -75,7 +76,7 @@ export type Recipe = {
   description: string
   shared: boolean
   added_by: User
-  products: Product[]
+  products: { product_id: Product['id']; amount_needed: number }[]
   preparation: string
   time: number
   difficulty: 'easy' | 'medium' | 'hard'
@@ -87,13 +88,15 @@ export type Recipe = {
 
 export type AgendaDay = {
   day: 0 | 1 | 2 | 3 | 4 | 5 | 6
-  agendaMeal: AgendaMeal[]
+  date: Date
+  agendaMeals: AgendaMeal[]
 }
 
 export type AgendaMeal = {
   meal: Meal
   products?: Product[]
   recipes?: Recipe[]
+  macro: FoodMacroElements
 }
 
 export type SizeProduct = {
@@ -114,6 +117,11 @@ export type Product = {
   protein: number
 }
 
+export type _LocalProduct = {
+  product: Product
+  __local_index: number
+}
+
 export type ChangePasswordType = {
   old_password: string
   new_password: string
@@ -124,4 +132,11 @@ export type RecipePage = {
   next: GenericTypes['url']
   previous: GenericTypes['url']
   results: Recipe[]
+}
+
+export type ProductPage = {
+  count: number
+  next: GenericTypes['url']
+  previous: GenericTypes['url']
+  results: Product[]
 }

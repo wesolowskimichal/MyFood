@@ -8,6 +8,7 @@ import { FridgePage } from '../components/pages/fridge/Fridge'
 import { ShoppingListPage } from '../components/pages/shoppingList/ShppingList'
 import { MealsPage } from '../components/pages/meals/Meals'
 import { SettingsPage } from '../components/pages/settings/SettingsPage'
+import { AddProductPage } from '../components/pages/addProduct/AddPorduct'
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
@@ -69,6 +70,20 @@ export function Navigator() {
               backgroundColor: '#222831'
             },
             headerTintColor: '#eee',
+            presentation: 'modal',
+            animationTypeForReplace: 'push',
+            animation: 'slide_from_right'
+          }}
+        />
+        <Stack.Screen
+          name="AddProduct"
+          component={AddProductPage}
+          options={{
+            headerStyle: {
+              backgroundColor: '#222831'
+            },
+            headerTintColor: '#eee',
+            headerTitle: 'Add product',
             presentation: 'modal',
             animationTypeForReplace: 'push',
             animation: 'slide_from_right'
